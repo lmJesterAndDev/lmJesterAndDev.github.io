@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "PrismArc",
   description: "Made with Love",
+  icons: {
+    icon: "/prismarc-logo.png",
+  },
 };
 
 export default function RootLayout({
