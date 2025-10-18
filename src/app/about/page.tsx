@@ -48,6 +48,9 @@ export default function AboutPage() {
         <p>📍 Основано в 2025 году</p>
         <p>💡 Философия: «Красота — в деталях»</p>
       </motion.div>
+            <footer id="contact" className="mt-24 border-t border-gray-800 w-full max-w-5xl pt-8 text-center">
+        <p className="text-gray-400 mb-4">© 2025 PrismArc. Все права защищены.</p>
+      </footer>
     </div>
   );
 }

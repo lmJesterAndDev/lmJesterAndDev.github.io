@@ -59,6 +59,9 @@ export default function ProjectsPage() {
           </motion.div>
         ))}
       </div>
+            <footer id="contact" className="mt-24 border-t border-gray-800 w-full max-w-5xl pt-8 text-center">
+        <p className="text-gray-400 mb-4">© 2025 PrismArc. Все права защищены.</p>
+      </footer>
     </div>
   );
 }

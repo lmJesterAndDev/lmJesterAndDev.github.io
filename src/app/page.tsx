@@ -18,6 +18,7 @@ export default function PrismArcSite() {
         <Link href="/about" className="hover:text-cyan-400 transition-colors">О нас</Link>
         <Link href="/projects" className="hover:text-cyan-400 transition-colors">Проекты</Link>
         <Link href="/contact" className="hover:text-cyan-400 transition-colors">Контакты</Link>
+        <Link href="/team" className="hover:text-cyan-400 transition-colors">Команда</Link>
       </nav>
       </header>
 
