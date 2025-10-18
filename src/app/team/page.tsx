@@ -13,6 +13,12 @@ const teamMembers = [
     about: 'Создатель проекта PrismArc. Разрабатывает архитектуру модов и занимается общим видением проекта.',
   },
   {
+    name: 'pingvooleni',
+    role: 'Гейм-дизайнер',
+    about: 'Придумывает уникальные игровые механики и взаимодействия. Стремится сделать игровой процесс захватывающим и увлекательным.',
+    avatar: '/a83a1fc5-59eb-4fa9-9cf8-4c40b7ae07aa.png', // путь относительно public
+  },
+  {
     uuid: '34d556454ead401780c19e7d4c3af41e',
     name: 'Ollaadyshek',
     role: 'Гейм-дизайнер',
@@ -67,12 +73,10 @@ export default function TeamPage() {
       >
         Наша команда
       </motion.h1>
-
-      {/* Список участников */}
-      <ul className="grid sm:grid-cols-2 gap-6 w-full max-w-3xl">
+            <ul className="grid sm:grid-cols-2 gap-6 w-full max-w-3xl">
         {teamMembers.map((member, index) => (
           <motion.li
-            key={member.uuid}
+            key={member.uuid ?? index}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 + index * 0.1 }}
@@ -80,7 +84,7 @@ export default function TeamPage() {
             className="flex items-center gap-4 bg-[#11161e] p-4 rounded-xl border border-gray-800 hover:border-purple-500 transition cursor-pointer hover:shadow-[0_0_12px_rgba(165,105,255,0.3)]"
           >
             <img
-              src={`https://crafatar.com/avatars/${member.uuid}?size=64&overlay`}
+              src={member.uuid ? `https://crafatar.com/avatars/${member.uuid}?size=64&overlay` : member.avatar}
               alt={member.name}
               className="w-12 h-12 rounded"
             />
@@ -91,7 +95,6 @@ export default function TeamPage() {
           </motion.li>
         ))}
       </ul>
-
       <p className="mt-16 text-sm text-gray-500 text-center">
         Список будет увеличиваться — ведь здесь можешь быть ты.
       </p>
@@ -102,9 +105,7 @@ export default function TeamPage() {
       >
         <p className="text-gray-400 mb-4">© 2025 PrismArc. Все права защищены.</p>
       </footer>
-
-      {/* 🪄 Модальное окно */}
-      <AnimatePresence>
+        <AnimatePresence>
         {selected && (
           <motion.div
             className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50"
@@ -131,7 +132,11 @@ export default function TeamPage() {
               </button>
 
               <img
-                src={`https://crafatar.com/avatars/${selected.uuid}?size=128&overlay`}
+                src={
+                  selected.uuid
+                    ? `https://crafatar.com/avatars/${selected.uuid}?size=128&overlay`
+                    : selected.avatar
+                }
                 alt={selected.name}
                 className="w-24 h-24 rounded-full mx-auto mb-4 shadow-lg"
               />
