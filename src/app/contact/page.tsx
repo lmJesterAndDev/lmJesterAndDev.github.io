@@ -51,7 +51,7 @@ export default function ContactPage() {
         animate={{ opacity: 1, y: 0 }}
         className="text-5xl font-bold mb-8 bg-gradient-to-r from-cyan-400 to-purple-500 text-transparent bg-clip-text"
       >
-        Контакти
+        Контакты
       </motion.h1>
 
       <motion.p
