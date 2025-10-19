@@ -19,17 +19,17 @@ export default function ContactPage() {
 
     try {
       await emailjs.send(
-        'service_8ossko5',    // ← service ID з EmailJS
-        'template_b5w7tc1',   // ← template ID з EmailJS
-        { message },          // поле шаблона
-        '5mjlbwaDpMMBPzYAZ'     // ← public key з EmailJS
+        'service_8ossko5', 
+        'template_b5w7tc1',   
+        { message },       
+        '5mjlbwaDpMMBPzYAZ'
       );
 
       setSent(true);
       setMessage('');
     } catch (err) {
       console.error(err);
-      alert('Не вдалося відправити повідомлення 😢');
+      alert('Не удалось отправить сообщение 😢');
     } finally {
       setSending(false);
     }
@@ -60,7 +60,7 @@ export default function ContactPage() {
         transition={{ delay: 0.3 }}
         className="text-gray-400 text-lg mb-12 max-w-2xl text-center"
       >
-        Якщо хочеш зв’язатися з нами або співпрацювати — ми завжди відкриті для спілкування! 
+  Если ты хочешь присоединиться к нашему сообществу или сотрудничать — мы всегда открыты для общения! Свяжись с нами любым удобным способом.
       </motion.p>
 
       <div className="flex flex-col sm:flex-row justify-center gap-8">
@@ -97,7 +97,7 @@ export default function ContactPage() {
       </div>
 
       <footer className="mt-24 border-t border-gray-800 w-full max-w-5xl pt-8 text-center">
-        <p className="text-gray-400 mb-4">© 2025 PrismArc. Всі права захищені.</p>
+        <p className="text-gray-400 mb-4">© 2025 PrismArc. Все права защищены.</p>
       </footer>
 
       {/* Модальне вікно */}
@@ -124,9 +124,9 @@ export default function ContactPage() {
                 <X className="w-5 h-5" />
               </button>
 
-              <h2 className="text-2xl font-semibold mb-4">Відправити повідомлення</h2>
+              <h2 className="text-2xl font-semibold mb-4">Отправить сообщение</h2>
               <p className="text-gray-400 text-sm mb-6">
-                Письмо буде відправлено на: <span className="text-cyan-400 font-medium">support@prismarc.fun</span>
+             Письмо будет отправлено на: <span className="text-cyan-400 font-medium">support@prismarc.fun</span>
               </p>
 
               {sent ? (
@@ -135,14 +135,14 @@ export default function ContactPage() {
                   animate={{ opacity: 1 }}
                   className="text-green-400 font-medium"
                 >
-                  ✅ Повідомлення успішно відправлено!
+                  ✅ Сообщение успешно отправлено!
                 </motion.div>
               ) : (
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                   <textarea
                     required
                     rows={5}
-                    placeholder="Введіть ваше повідомлення..."
+                    placeholder="Введите ваше сообщение..."
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     className="bg-[#0b0e13] border border-gray-700 rounded-xl p-3 text-sm focus:border-cyan-500 outline-none resize-none"
@@ -153,7 +153,7 @@ export default function ContactPage() {
                     disabled={sending}
                     className="bg-gradient-to-r from-cyan-500 to-purple-500 rounded-xl py-2 font-medium hover:opacity-90 transition disabled:opacity-50"
                   >
-                    {sending ? 'Відправка...' : 'Відправити'}
+                    {sending ? 'Отправка...' : 'Отправить'}
                   </button>
                 </form>
               )}
