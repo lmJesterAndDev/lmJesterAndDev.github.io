@@ -1,22 +1,53 @@
 'use client';
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { Github, Mail, MessageCircle } from 'lucide-react';
-import { ArrowLeft } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Github, Mail, MessageCircle, ArrowLeft, X } from 'lucide-react';
 
 export default function ContactPage() {
-    const router = useRouter();
-  return  (
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState('');
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSending(true);
+
+    try {
+      // Пример API-запроса — можно заменить своим backend или сервисом
+      await fetch('/api/send-mail', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: 'support@prismarc.fun',
+          message,
+        }),
+      });
+
+      setSent(true);
+      setMessage('');
+    } catch (err) {
+      console.error(err);
+      alert('Не удалось отправить сообщение 😢');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return (
     <div className="min-h-screen bg-[#0b0e13] text-white flex flex-col items-center px-6 py-16">
-      {/* Кнопка "Вернуться назад" */}
-    <button
-      onClick={() => router.back()}
-      className="mb-6 self-start bg-[#0b0e13] hover:shadow-[0_0_10px_2px_rgba(165,105,255,0.5)] text-[#6e3bcf] hover:text-purple-400 w-12 h-12 flex items-center justify-center rounded-full transition duration-200 border border-[#1a1f2e]"
-      aria-label="Вернуться назад"
-    >
-      <ArrowLeft className="w-5 h-5" />
-    </button>
+      {/* Кнопка "Назад" */}
+      <button
+        onClick={() => router.back()}
+        className="mb-6 self-start bg-[#0b0e13] hover:shadow-[0_0_10px_2px_rgba(165,105,255,0.5)] text-[#6e3bcf] hover:text-purple-400 w-12 h-12 flex items-center justify-center rounded-full transition duration-200 border border-[#1a1f2e]"
+        aria-label="Вернуться назад"
+      >
+        <ArrowLeft className="w-5 h-5" />
+      </button>
+
       <motion.h1
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -58,18 +89,81 @@ export default function ContactPage() {
           GitHub
         </motion.a>
 
-        <motion.a
+        <motion.button
           whileHover={{ scale: 1.1 }}
-          href="mailto:prismarc.team@gmail.com"
+          onClick={() => setOpen(true)}
           className="flex items-center gap-3 bg-[#11161e] px-6 py-3 rounded-2xl border border-gray-800 hover:border-cyan-500 transition"
         >
           <Mail className="text-cyan-400 w-6 h-6" />
           Email
-        </motion.a>
+        </motion.button>
       </div>
-            <footer id="contact" className="mt-24 border-t border-gray-800 w-full max-w-5xl pt-8 text-center">
+
+      <footer className="mt-24 border-t border-gray-800 w-full max-w-5xl pt-8 text-center">
         <p className="text-gray-400 mb-4">© 2025 PrismArc. Все права защищены.</p>
       </footer>
+
+      {/* Модальное окно */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setOpen(false)}
+          >
+            <motion.div
+              onClick={(e) => e.stopPropagation()}
+              className="bg-[#11161e] border border-[#2a2f3a] rounded-2xl p-8 w-full max-w-md text-center relative"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+            >
+              <button
+                onClick={() => setOpen(false)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-white transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <h2 className="text-2xl font-semibold mb-4">Отправить сообщение</h2>
+              <p className="text-gray-400 text-sm mb-6">
+                Письмо будет отправлено на: <span className="text-cyan-400 font-medium">support@prismarc.fun</span>
+              </p>
+
+              {sent ? (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-green-400 font-medium"
+                >
+                  ✅ Сообщение успешно отправлено!
+                </motion.div>
+              ) : (
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                  <textarea
+                    required
+                    rows={5}
+                    placeholder="Введите ваше сообщение..."
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    className="bg-[#0b0e13] border border-gray-700 rounded-xl p-3 text-sm focus:border-cyan-500 outline-none resize-none"
+                  />
+
+                  <button
+                    type="submit"
+                    disabled={sending}
+                    className="bg-gradient-to-r from-cyan-500 to-purple-500 rounded-xl py-2 font-medium hover:opacity-90 transition disabled:opacity-50"
+                  >
+                    {sending ? 'Отправка...' : 'Отправить'}
+                  </button>
+                </form>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
