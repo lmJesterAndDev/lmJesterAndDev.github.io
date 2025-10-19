@@ -15,16 +15,28 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const lastSent = localStorage.getItem('lastSent');
+    const now = Date.now();
+    const cooldown = 5 * 60 * 1000;
+
+    if (lastSent && now - parseInt(lastSent) < cooldown) {
+      const remaining = Math.ceil((cooldown - (now - parseInt(lastSent))) / 1000 / 60);
+      alert(`Подожди ${remaining} мин. перед отправкой нового сообщения ⏳`);
+      return;
+    }
+
     setSending(true);
 
     try {
       await emailjs.send(
-        'service_8ossko5', 
-        'template_b5w7tc1',   
-        { message },       
+        'service_8ossko5',
+        'template_b5w7tc1',
+        { message },
         '5mjlbwaDpMMBPzYAZ'
       );
 
+      localStorage.setItem('lastSent', now.toString());
       setSent(true);
       setMessage('');
     } catch (err) {
@@ -37,7 +49,6 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-[#0b0e13] text-white flex flex-col items-center px-6 py-16">
-      {/* Кнопка "Назад" */}
       <button
         onClick={() => router.back()}
         className="mb-6 self-start bg-[#0b0e13] hover:shadow-[0_0_10px_2px_rgba(165,105,255,0.5)] text-[#6e3bcf] hover:text-purple-400 w-12 h-12 flex items-center justify-center rounded-full transition duration-200 border border-[#1a1f2e]"
@@ -60,7 +71,7 @@ export default function ContactPage() {
         transition={{ delay: 0.3 }}
         className="text-gray-400 text-lg mb-12 max-w-2xl text-center"
       >
-  Если ты хочешь присоединиться к нашему сообществу или сотрудничать — мы всегда открыты для общения! Свяжись с нами любым удобным способом.
+         Если ты хочешь присоединиться к нашему сообществу или сотрудничать — мы всегда открыты для общения! Свяжись с нами любым удобным способом.
       </motion.p>
 
       <div className="flex flex-col sm:flex-row justify-center gap-8">
@@ -100,7 +111,6 @@ export default function ContactPage() {
         <p className="text-gray-400 mb-4">© 2025 PrismArc. Все права защищены.</p>
       </footer>
 
-      {/* Модальне вікно */}
       <AnimatePresence>
         {open && (
           <motion.div
