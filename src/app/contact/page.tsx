@@ -19,7 +19,7 @@ export default function ContactPage() {
 
     try {
       await emailjs.send(
-        'service_m2ous6a',    // ← service ID з EmailJS
+        'service_8ossko5',    // ← service ID з EmailJS
         'template_b5w7tc1',   // ← template ID з EmailJS
         { message },          // поле шаблона
         '5mjlbwaDpMMBPzYAZ'     // ← public key з EmailJS
