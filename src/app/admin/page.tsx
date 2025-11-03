@@ -20,6 +20,17 @@ export default function AdminPage() {
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [users, setUsers] = useState<string[]>([]);
 
+  function reloadTodos() {
+    const storedTodos = localStorage.getItem('todos');
+    const parsed: Todo[] = storedTodos ? JSON.parse(storedTodos) : [];
+    setTodos(parsed);
+    const uniqueUsers = Array.from(new Set(parsed.map((t) => t.owner)));
+    setUsers(uniqueUsers);
+    if (!selectedUser && uniqueUsers.length > 0) {
+      setSelectedUser(uniqueUsers[0]);
+    }
+  }
+
   useEffect(() => {
     const stored = localStorage.getItem('user');
     if (!stored) {
@@ -30,14 +41,16 @@ export default function AdminPage() {
     if (parsed.role !== 'owner') router.push('/todo');
     setUser(parsed);
 
-    const storedTodos = localStorage.getItem('todos');
-    const parsedTodos: Todo[] = storedTodos ? JSON.parse(storedTodos) : [];
-    setTodos(parsedTodos);
-
-    const uniqueUsers = Array.from(new Set(parsedTodos.map((t) => t.owner)));
-    setUsers(uniqueUsers);
-    if (uniqueUsers.length > 0) setSelectedUser(uniqueUsers[0]);
+    reloadTodos();
   }, [router]);
+
+  // Автообновление каждые 2 секунды
+  useEffect(() => {
+    const interval = setInterval(() => {
+      reloadTodos();
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
 
   const filteredTodos = selectedUser
     ? todos.filter((t) => t.owner === selectedUser)

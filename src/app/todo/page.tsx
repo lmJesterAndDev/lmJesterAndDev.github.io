@@ -21,6 +21,7 @@ export default function TodoPage() {
   const [newTodo, setNewTodo] = useState('');
   const [targetUser, setTargetUser] = useState('');
 
+  // Загрузка пользователя и задач
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (!storedUser) {
@@ -34,32 +35,43 @@ export default function TodoPage() {
     if (storedTodos) setTodos(JSON.parse(storedTodos));
   }, [router]);
 
+  // Синхронизация задач с localStorage
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todos));
   }, [todos]);
 
+  // Добавление новой задачи
   function addTodo() {
     if (!newTodo.trim()) return;
+
+    // Если админ пишет логин — задача пойдёт тому пользователю
+    // Если нет — себе
     const ownerName =
       user.role === 'owner' && targetUser.trim()
-        ? targetUser
+        ? targetUser.trim()
         : user.username;
 
-    const newTask = {
+    const newTask: Todo = {
       id: Date.now(),
-      title: newTodo,
+      title: newTodo.trim(),
       owner: ownerName,
       done: false,
     };
-    setTodos([...todos, newTask]);
+
+    // Добавляем в список
+    const updated = [...todos, newTask];
+    setTodos(updated);
+    localStorage.setItem('todos', JSON.stringify(updated)); // 👈 важно
     setNewTodo('');
     setTargetUser('');
   }
 
   function toggleDone(id: number) {
-    setTodos(
-      todos.map((t) => (t.id === id ? { ...t, done: !t.done } : t))
+    const updated = todos.map((t) =>
+      t.id === id ? { ...t, done: !t.done } : t
     );
+    setTodos(updated);
+    localStorage.setItem('todos', JSON.stringify(updated)); // 👈 важно
   }
 
   function logout() {
@@ -67,6 +79,16 @@ export default function TodoPage() {
     router.push('/login');
   }
 
+  // обновляем список каждые 2 секунды — чтобы admin видел изменения
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const stored = localStorage.getItem('todos');
+      if (stored) setTodos(JSON.parse(stored));
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // какие задачи видим
   const visibleTodos =
     user?.role === 'owner'
       ? todos
