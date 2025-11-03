@@ -1,16 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabaseClient';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-
-type User = {
-  username: string;
-  password: string;
-  role: 'owner' | 'user';
-};
 
 export default function LoginPage() {
   const router = useRouter();
@@ -18,35 +13,24 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    const stored = localStorage.getItem('users');
-    if (!stored) {
-      const defaultUsers: User[] = [
-        { username: 'lmJester', password: 'N8v$k2pRzq7L', role: 'owner' },
-        { username: 'pingvooleni', password: 'bT6!rYq3Wp9M', role: 'user' },
-        { username: 'Ollaadyshek', password: 'F4m#Hc8Zs2Qx', role: 'user' },
-        { username: 'Rasandr', password: 'vR9@pG1nXw6K', role: 'user' },
-        { username: 'SomniaRay', password: 'T2u$Lz7Qm8Bj', role: 'user' },
-        { username: 'SleppYll', password: 'qK7!sV4nYp3R', role: 'user' },
-        { username: 'Mr_Skittlles', password: 'Z5x#Nw2Pb8Gh', role: 'user' },
-      ];
-      localStorage.setItem('users', JSON.stringify(defaultUsers));
-    }
-  }, []);
-
-  function handleLogin() {
+  async function handleLogin() {
     setError('');
-    const users: User[] = JSON.parse(localStorage.getItem('users') || '[]');
-    const found = users.find(
-      (u) => u.username === username && u.password === password
-    );
 
-    if (found) {
-      localStorage.setItem('user', JSON.stringify(found));
-      router.push('/todo');
-    } else {
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('username', username)
+      .eq('password', password)
+      .single();
+
+    if (error || !data) {
       setError('Неверный логин или пароль');
+      return;
     }
+
+    localStorage.setItem('user', JSON.stringify(data));
+
+    router.push('/todo');
   }
 
   return (
@@ -71,9 +55,7 @@ export default function LoginPage() {
             className="mb-4 bg-[#0b0e13] border-gray-700 text-white"
           />
 
-          {error && (
-            <p className="text-red-500 mb-3 text-center">{error}</p>
-          )}
+          {error && <p className="text-red-500 mb-3 text-center">{error}</p>}
 
           <Button className="w-full" onClick={handleLogin}>
             Войти
