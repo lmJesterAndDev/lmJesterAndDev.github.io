@@ -41,11 +41,12 @@ export default function AdminPage() {
       .from('todos')
       .select('*')
       .order('id', { ascending: true });
+
     if (!error && data) {
       setTodos(data);
-      const uniqueUsers = Array.from(new Set(data.map(t => t.owner)));
+      const uniqueUsers = Array.from(new Set(data.map((t) => t.owner)));
       setUsers(uniqueUsers);
-      if (uniqueUsers.length > 0) setSelectedUser(uniqueUsers[0]);
+      if (uniqueUsers.length > 0 && !selectedUser) setSelectedUser(uniqueUsers[0]);
     }
   }
 
@@ -63,19 +64,21 @@ export default function AdminPage() {
   }
 
   const filteredTodos = selectedUser
-    ? todos.filter(t => t.owner === selectedUser)
+    ? todos.filter((t) => t.owner === selectedUser)
     : [];
 
   return (
     <div className="min-h-screen bg-[#0b0e13] text-white flex">
-      {/* Sidebar пользователей */}
+      {/* Боковая панель пользователей */}
       <div className="w-60 border-r border-gray-800 p-4 flex flex-col gap-2">
         <h2 className="text-xl font-bold text-cyan-400 mb-4">Пользователи</h2>
-        {users.map(u => (
+        {users.map((u) => (
           <Button
             key={u}
-            className={`text-left ${
-              selectedUser === u ? 'bg-cyan-500/20' : ''
+            className={`justify-start transition-colors ${
+              selectedUser === u
+                ? 'bg-cyan-600 text-white hover:bg-cyan-700'
+                : 'bg-[#11161e] hover:bg-[#151b25]'
             }`}
             onClick={() => setSelectedUser(u)}
           >
@@ -91,9 +94,16 @@ export default function AdminPage() {
         </h1>
 
         <motion.div layout className="space-y-3">
-          {filteredTodos.map(t => (
-            <Card key={t.id} className="bg-[#11161e] border-none p-3">
-              <CardContent className="flex justify-between items-center">
+          {filteredTodos.map((t) => (
+            <Card
+              key={t.id}
+              className={`border-none p-3 transition-all ${
+                t.done
+                  ? 'bg-[#0e1219] opacity-80'
+                  : 'bg-[#11161e] hover:bg-[#141b25]'
+              } text-white`}
+            >
+              <CardContent className="flex justify-between items-center p-0">
                 <div className="flex items-center gap-3">
                   <input
                     type="checkbox"
@@ -101,14 +111,18 @@ export default function AdminPage() {
                     onChange={() => toggleDone(t.id, t.done)}
                     className="w-5 h-5 accent-cyan-500 cursor-pointer"
                   />
-                  <p className={t.done ? 'line-through text-gray-400' : ''}>
+                  <p
+                    className={`text-base ${
+                      t.done ? 'line-through text-gray-500' : 'text-gray-100'
+                    }`}
+                  >
                     {t.title}
                   </p>
                 </div>
                 <Button
                   variant="destructive"
                   onClick={() => deleteTodo(t.id)}
-                  className="bg-red-600 hover:bg-red-700"
+                  className="bg-red-600 hover:bg-red-700 text-white"
                 >
                   Удалить
                 </Button>
@@ -117,13 +131,20 @@ export default function AdminPage() {
           ))}
 
           {filteredTodos.length === 0 && (
-            <p className="text-gray-500">Нет заданий для этого пользователя</p>
+            <p className="text-gray-500 text-center">
+              Нет заданий для этого пользователя
+            </p>
           )}
         </motion.div>
 
-        <Button className="mt-6 cursor-pointer" onClick={() => router.push('/todo')}>
-          Назад
-        </Button>
+        <div className="pt-6">
+          <Button
+            className="cursor-pointer bg-cyan-600 hover:bg-cyan-700 transition-colors"
+            onClick={() => router.push('/todo')}
+          >
+            Назад
+          </Button>
+        </div>
       </div>
     </div>
   );

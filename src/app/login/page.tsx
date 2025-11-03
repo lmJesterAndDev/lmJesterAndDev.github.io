@@ -22,8 +22,13 @@ export default function LoginPage() {
     const stored = localStorage.getItem('users');
     if (!stored) {
       const defaultUsers: User[] = [
-        { username: 'admin', password: '1234', role: 'owner' },
-        { username: 'user', password: '1234', role: 'user' },
+        { username: 'lmJester', password: 'N8v$k2pRzq7L', role: 'owner' },
+        { username: 'pingvooleni', password: 'bT6!rYq3Wp9M', role: 'user' },
+        { username: 'Ollaadyshek', password: 'F4m#Hc8Zs2Qx', role: 'user' },
+        { username: 'Rasandr', password: 'vR9@pG1nXw6K', role: 'user' },
+        { username: 'SomniaRay', password: 'T2u$Lz7Qm8Bj', role: 'user' },
+        { username: 'SleppYll', password: 'qK7!sV4nYp3R', role: 'user' },
+        { username: 'Mr_Skittlles', password: 'Z5x#Nw2Pb8Gh', role: 'user' },
       ];
       localStorage.setItem('users', JSON.stringify(defaultUsers));
     }
