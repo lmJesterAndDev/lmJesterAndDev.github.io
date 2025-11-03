@@ -19,7 +19,7 @@ export default function TodoPage() {
   const [user, setUser] = useState<any>(null);
   const [todos, setTodos] = useState<Todo[]>([]);
   const [newTodo, setNewTodo] = useState('');
-  const [targetUser, setTargetUser] = useState(''); // для добавления задач другим
+  const [targetUser, setTargetUser] = useState('');
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -32,18 +32,18 @@ export default function TodoPage() {
 
     const storedTodos = localStorage.getItem('todos');
     if (storedTodos) setTodos(JSON.parse(storedTodos));
-  }, []);
+  }, [router]);
 
   useEffect(() => {
-    if (todos.length) {
-      localStorage.setItem('todos', JSON.stringify(todos));
-    }
+    localStorage.setItem('todos', JSON.stringify(todos));
   }, [todos]);
 
   function addTodo() {
     if (!newTodo.trim()) return;
     const ownerName =
-      user.role === 'owner' && targetUser.trim() ? targetUser : user.username;
+      user.role === 'owner' && targetUser.trim()
+        ? targetUser
+        : user.username;
 
     const newTask = {
       id: Date.now(),
@@ -51,17 +51,15 @@ export default function TodoPage() {
       owner: ownerName,
       done: false,
     };
-    const updated = [...todos, newTask];
-    setTodos(updated);
+    setTodos([...todos, newTask]);
     setNewTodo('');
     setTargetUser('');
   }
 
   function toggleDone(id: number) {
-    const updated = todos.map(t =>
-      t.id === id ? { ...t, done: !t.done } : t
+    setTodos(
+      todos.map((t) => (t.id === id ? { ...t, done: !t.done } : t))
     );
-    setTodos(updated);
   }
 
   function logout() {
@@ -69,9 +67,10 @@ export default function TodoPage() {
     router.push('/login');
   }
 
-  // задачи, которые должен видеть текущий пользователь
   const visibleTodos =
-    user?.role === 'owner' ? todos : todos.filter(t => t.owner === user?.username);
+    user?.role === 'owner'
+      ? todos
+      : todos.filter((t) => t.owner === user?.username);
 
   return (
     <div className="min-h-screen bg-[#0b0e13] text-white flex flex-col items-center px-6 py-16">
@@ -86,22 +85,31 @@ export default function TodoPage() {
         <Input
           placeholder="Новая задача..."
           value={newTodo}
-          onChange={e => setNewTodo(e.target.value)}
+          onChange={(e) => setNewTodo(e.target.value)}
           className="bg-[#11161e] border-none text-white"
         />
         {user?.role === 'owner' && (
           <Input
             placeholder="Кому (логин)"
             value={targetUser}
-            onChange={e => setTargetUser(e.target.value)}
+            onChange={(e) => setTargetUser(e.target.value)}
             className="bg-[#11161e] border-none text-white w-40"
           />
         )}
         <Button onClick={addTodo}>Добавить</Button>
       </div>
 
+      {user?.role === 'owner' && (
+        <Button
+          className="mb-6 bg-cyan-700/30"
+          onClick={() => router.push('/admin')}
+        >
+          Панель администратора
+        </Button>
+      )}
+
       <motion.div layout className="space-y-3 w-full max-w-xl">
-        {visibleTodos.map(t => (
+        {visibleTodos.map((t) => (
           <Card key={t.id} className="bg-[#11161e] border-none p-3">
             <CardContent className="flex justify-between items-center">
               <div className="flex items-center gap-3">
