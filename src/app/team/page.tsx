@@ -16,7 +16,7 @@ const teamMembers = [
     name: 'pingvooleni',
     role: 'Гейм-дизайнер',
     about: 'Придумывает уникальные игровые механики и взаимодействия. Стремится сделать игровой процесс захватывающим и увлекательным.',
-    avatar: '/a83a1fc5-59eb-4fa9-9cf8-4c40b7ae07aa.png', // путь относительно public
+    avatar: '/a83a1fc5-59eb-4fa9-9cf8-4c40b7ae07aa.png',
   },
   {
     uuid: '34d556454ead401780c19e7d4c3af41e',
